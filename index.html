@@ -3,479 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de Calories Intelligent</title>
+    <title>Consulting IA - Accueil</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .food-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
-        }
-        .progress-ring__circle {
-            transition: stroke-dashoffset 0.5s;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-    </style>
 </head>
-<body class="bg-gray-50 font-sans">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-indigo-700 mb-2">Calculateur de Calories</h1>
-            <p class="text-gray-600">Suivez votre apport calorique quotidien avec précision</p>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Profil utilisateur -->
-            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-1">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-user-circle text-indigo-500 mr-2"></i> Votre Profil
-                </h2>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Sexe</label>
-                        <div class="flex space-x-4">
-                            <button id="maleBtn" class="gender-btn px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 flex-1">Homme</button>
-                            <button id="femaleBtn" class="gender-btn px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 flex-1">Femme</button>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Âge</label>
-                        <input type="number" id="age" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" min="10" max="120" value="30">
-                    </div>
-                    
-                    <div>
-                        <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Poids (kg)</label>
-                        <input type="number" id="weight" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" min="30" max="200" value="70">
-                    </div>
-                    
-                    <div>
-                        <label for="height" class="block text-sm font-medium text-gray-700 mb-1">Taille (cm)</label>
-                        <input type="number" id="height" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" min="100" max="250" value="175">
-                    </div>
-                    
-                    <div>
-                        <label for="activity" class="block text-sm font-medium text-gray-700 mb-1">Niveau d'activité</label>
-                        <select id="activity" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="1.2">Sédentaire (peu ou pas d'exercice)</option>
-                            <option value="1.375">Légèrement actif (exercice léger 1-3 jours/semaine)</option>
-                            <option value="1.55" selected>Modérément actif (exercice modéré 3-5 jours/semaine)</option>
-                            <option value="1.725">Très actif (exercice intense 6-7 jours/semaine)</option>
-                            <option value="1.9">Extrêmement actif (exercice très intense + travail physique)</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label for="goal" class="block text-sm font-medium text-gray-700 mb-1">Objectif</label>
-                        <select id="goal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="-500">Perte de poids (500 kcal de déficit)</option>
-                            <option value="-250">Perte de poids légère (250 kcal de déficit)</option>
-                            <option value="0" selected>Maintien du poids</option>
-                            <option value="250">Prise de masse légère (250 kcal de surplus)</option>
-                            <option value="500">Prise de masse (500 kcal de surplus)</option>
-                        </select>
-                    </div>
-                    
-                    <button id="calculateBtn" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition duration-300 mt-4">
-                        Calculer mes besoins
-                    </button>
-                </div>
-                
-                <div id="calorieResult" class="mt-6 p-4 bg-indigo-50 rounded-lg hidden">
-                    <h3 class="font-medium text-indigo-800 mb-2">Vos besoins caloriques</h3>
-                    <p class="text-gray-700">Métabolisme de base: <span id="bmr" class="font-semibold">0</span> kcal</p>
-                    <p class="text-gray-700">Besoins totaux: <span id="tdee" class="font-semibold text-indigo-600">0</span> kcal</p>
-                    <p class="text-gray-700">Objectif quotidien: <span id="goalCalories" class="font-semibold text-indigo-600">0</span> kcal</p>
-                </div>
+<body class="font-sans text-gray-800">
+    <header class="bg-gray-900 text-white">
+        <nav class="container mx-auto flex justify-between p-4">
+            <span class="text-xl font-bold">Consulting IA</span>
+            <div class="space-x-4">
+                <a href="#about" class="hover:text-indigo-300">À propos</a>
+                <a href="#services" class="hover:text-indigo-300">Services</a>
+                <a href="#team" class="hover:text-indigo-300">Équipe</a>
+                <a href="#contact" class="hover:text-indigo-300">Contact</a>
             </div>
-            
-            <!-- Journal alimentaire -->
-            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                        <i class="fas fa-utensils text-indigo-500 mr-2"></i> Journal Alimentaire
-                    </h2>
-                    <div class="relative">
-                        <input type="text" id="foodSearch" placeholder="Rechercher un aliment..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                    </div>
+        </nav>
+        <div class="container mx-auto text-center py-20">
+            <h1 class="text-5xl font-bold mb-6">Révélez le potentiel de l'IA</h1>
+            <p class="mb-8">Nous accompagnons les entreprises dans leur transformation grâce à l'intelligence artificielle.</p>
+            <a href="#contact" class="bg-indigo-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-indigo-500 transition">Contactez-nous</a>
+        </div>
+    </header>
+
+    <section id="about" class="container mx-auto py-20">
+        <h2 class="text-3xl font-bold mb-4">À propos</h2>
+        <p class="text-gray-600">Notre équipe d'experts aide les organisations à intégrer des solutions d'IA sur mesure pour optimiser leurs processus et créer de nouvelles opportunités.</p>
+    </section>
+
+    <section id="services" class="bg-gray-100 py-20">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Services</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">Analyse de données</h3>
+                    <p class="text-gray-600">Exploitez la puissance de vos données pour obtenir des insights stratégiques.</p>
                 </div>
-                
-                <!-- Cercle de progression -->
-                <div class="flex justify-center mb-8">
-                    <div class="relative w-48 h-48">
-                        <svg class="w-full h-full" viewBox="0 0 100 100">
-                            <!-- Cercle de fond -->
-                            <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
-                            <!-- Cercle de progression -->
-                            <circle id="progressCircle" class="text-indigo-500 progress-ring__circle" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span id="consumedCalories" class="text-3xl font-bold text-gray-800">0</span>
-                            <span class="text-sm text-gray-500">kcal sur</span>
-                            <span id="dailyGoal" class="text-lg font-semibold text-indigo-600">0</span>
-                        </div>
-                    </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">Automatisation intelligente</h3>
+                    <p class="text-gray-600">Optimisez vos processus métier grâce à l'apprentissage automatique.</p>
                 </div>
-                
-                <!-- Répartition des macronutriments -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-blue-50 p-3 rounded-lg">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-blue-800">Protéines</span>
-                            <span id="proteinPercent" class="text-sm font-medium text-blue-800">0%</span>
-                        </div>
-                        <div class="w-full bg-blue-200 rounded-full h-2">
-                            <div id="proteinBar" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
-                        </div>
-                        <div class="mt-1 text-xs text-blue-600">
-                            <span id="proteinGrams">0</span>g / <span id="proteinGoal">0</span>g
-                        </div>
-                    </div>
-                    <div class="bg-green-50 p-3 rounded-lg">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-green-800">Glucides</span>
-                            <span id="carbsPercent" class="text-sm font-medium text-green-800">0%</span>
-                        </div>
-                        <div class="w-full bg-green-200 rounded-full h-2">
-                            <div id="carbsBar" class="bg-green-600 h-2 rounded-full" style="width: 0%"></div>
-                        </div>
-                        <div class="mt-1 text-xs text-green-600">
-                            <span id="carbsGrams">0</span>g / <span id="carbsGoal">0</span>g
-                        </div>
-                    </div>
-                    <div class="bg-yellow-50 p-3 rounded-lg">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-yellow-800">Lipides</span>
-                            <span id="fatPercent" class="text-sm font-medium text-yellow-800">0%</span>
-                        </div>
-                        <div class="w-full bg-yellow-200 rounded-full h-2">
-                            <div id="fatBar" class="bg-yellow-600 h-2 rounded-full" style="width: 0%"></div>
-                        </div>
-                        <div class="mt-1 text-xs text-yellow-600">
-                            <span id="fatGrams">0</span>g / <span id="fatGoal">0</span>g
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Liste des aliments ajoutés -->
-                <div class="mb-6">
-                    <h3 class="text-md font-medium text-gray-700 mb-2">Aliments consommés</h3>
-                    <div id="consumedFoods" class="border border-gray-200 rounded-lg divide-y divide-gray-200 max-h-48 overflow-y-auto custom-scrollbar">
-                        <div class="text-center py-4 text-gray-500">
-                            Aucun aliment ajouté pour le moment
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Liste des aliments disponibles -->
-                <div>
-                    <h3 class="text-md font-medium text-gray-700 mb-2">Aliments disponibles</h3>
-                    <div id="foodList" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto custom-scrollbar">
-                        <!-- Les aliments seront ajoutés ici par JavaScript -->
-                    </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">Conseil et formation</h3>
+                    <p class="text-gray-600">Bénéficiez d'un accompagnement personnalisé et formez vos équipes aux technologies d'IA.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script>
-        // Base de données d'aliments
-        const foodDatabase = [
-            { name: "Pomme", calories: 52, protein: 0.3, carbs: 14, fat: 0.2, serving: "100g" },
-            { name: "Banane", calories: 89, protein: 1.1, carbs: 23, fat: 0.3, serving: "100g" },
-            { name: "Poulet (poitrine)", calories: 165, protein: 31, carbs: 0, fat: 3.6, serving: "100g" },
-            { name: "Saumon", calories: 208, protein: 20, carbs: 0, fat: 13, serving: "100g" },
-            { name: "Riz brun", calories: 111, protein: 2.6, carbs: 23, fat: 0.9, serving: "100g cuit" },
-            { name: "Brocoli", calories: 34, protein: 2.8, carbs: 7, fat: 0.4, serving: "100g" },
-            { name: "Oeuf", calories: 68, protein: 5.5, carbs: 0.3, fat: 4.8, serving: "1 oeuf (50g)" },
-            { name: "Pain complet", calories: 247, protein: 13, carbs: 41, fat: 3.4, serving: "100g" },
-            { name: "Avocat", calories: 160, protein: 2, carbs: 9, fat: 15, serving: "100g" },
-            { name: "Yaourt nature", calories: 59, protein: 3.5, carbs: 4.7, fat: 3.3, serving: "100g" },
-            { name: "Noix", calories: 607, protein: 20, carbs: 21, fat: 54, serving: "100g" },
-            { name: "Fromage", calories: 402, protein: 25, carbs: 1.3, fat: 33, serving: "100g" },
-            { name: "Pâtes", calories: 131, protein: 5, carbs: 25, fat: 1, serving: "100g cuit" },
-            { name: "Pomme de terre", calories: 77, protein: 2, carbs: 17, fat: 0.1, serving: "100g" },
-            { name: "Tomate", calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2, serving: "100g" },
-            { name: "Concombre", calories: 16, protein: 0.7, carbs: 3.6, fat: 0.1, serving: "100g" },
-            { name: "Carotte", calories: 41, protein: 0.9, carbs: 10, fat: 0.2, serving: "100g" },
-            { name: "Eau", calories: 0, protein: 0, carbs: 0, fat: 0, serving: "250ml" },
-            { name: "Thé vert", calories: 0, protein: 0, carbs: 0, fat: 0, serving: "250ml" },
-            { name: "Café noir", calories: 0, protein: 0, carbs: 0, fat: 0, serving: "250ml" },
-            { name: "Salade verte", calories: 15, protein: 1.4, carbs: 2.9, fat: 0.1, serving: "100g" },
-            { name: "Champignons", calories: 22, protein: 3.1, carbs: 3.3, fat: 0.3, serving: "100g" },
-            { name: "Poivron", calories: 20, protein: 0.9, carbs: 4.6, fat: 0.2, serving: "100g" },
-            { name: "Courgette", calories: 17, protein: 1.2, carbs: 3.1, fat: 0.3, serving: "100g" },
-            { name: "Aubergine", calories: 25, protein: 1, carbs: 6, fat: 0.2, serving: "100g" }
-        ];
+    <section id="team" class="container mx-auto py-20">
+        <h2 class="text-3xl font-bold mb-8 text-center">Équipe</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <img src="https://via.placeholder.com/150" class="mx-auto rounded-full mb-4" alt="Photo membre 1">
+                <h3 class="text-xl font-semibold">Alex Dupont</h3>
+                <p class="text-gray-600">Expert Data Science</p>
+            </div>
+            <div class="text-center">
+                <img src="https://via.placeholder.com/150" class="mx-auto rounded-full mb-4" alt="Photo membre 2">
+                <h3 class="text-xl font-semibold">Marie Dubois</h3>
+                <p class="text-gray-600">Consultante IA</p>
+            </div>
+            <div class="text-center">
+                <img src="https://via.placeholder.com/150" class="mx-auto rounded-full mb-4" alt="Photo membre 3">
+                <h3 class="text-xl font-semibold">Jean Martin</h3>
+                <p class="text-gray-600">Ingénieur Machine Learning</p>
+            </div>
+        </div>
+    </section>
 
-        // Variables globales
-        let userProfile = {
-            gender: 'male',
-            age: 30,
-            weight: 70,
-            height: 175,
-            activity: 1.55,
-            goal: 0,
-            dailyCalories: 0,
-            proteinGoal: 0,
-            carbsGoal: 0,
-            fatGoal: 0
-        };
+    <section id="contact" class="bg-gray-100 py-20">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Contact</h2>
+            <form class="max-w-xl mx-auto space-y-4">
+                <input type="text" placeholder="Nom" class="w-full p-3 border rounded">
+                <input type="email" placeholder="Email" class="w-full p-3 border rounded">
+                <textarea placeholder="Votre message" rows="4" class="w-full p-3 border rounded"></textarea>
+                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-500 transition">Envoyer</button>
+            </form>
+        </div>
+    </section>
 
-        let consumedFoods = [];
-        let dailyGoal = 0;
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Remplir la liste des aliments
-            populateFoodList(foodDatabase);
-            
-            // Écouteurs d'événements
-            document.getElementById('maleBtn').addEventListener('click', function() {
-                setGender('male');
-            });
-            
-            document.getElementById('femaleBtn').addEventListener('click', function() {
-                setGender('female');
-            });
-            
-            document.getElementById('calculateBtn').addEventListener('click', calculateCalories);
-            
-            document.getElementById('foodSearch').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const filteredFoods = foodDatabase.filter(food => 
-                    food.name.toLowerCase().includes(searchTerm)
-                );
-                populateFoodList(filteredFoods);
-            });
-            
-            // Calcul initial
-            calculateCalories();
-        });
-
-        // Fonctions
-        function setGender(gender) {
-            userProfile.gender = gender;
-            document.getElementById('maleBtn').classList.remove('bg-indigo-100', 'border-indigo-500');
-            document.getElementById('femaleBtn').classList.remove('bg-indigo-100', 'border-indigo-500');
-            
-            if (gender === 'male') {
-                document.getElementById('maleBtn').classList.add('bg-indigo-100', 'border-indigo-500');
-            } else {
-                document.getElementById('femaleBtn').classList.add('bg-indigo-100', 'border-indigo-500');
-            }
-        }
-
-        function calculateCalories() {
-            // Récupérer les valeurs du formulaire
-            userProfile.age = parseInt(document.getElementById('age').value);
-            userProfile.weight = parseInt(document.getElementById('weight').value);
-            userProfile.height = parseInt(document.getElementById('height').value);
-            userProfile.activity = parseFloat(document.getElementById('activity').value);
-            userProfile.goal = parseInt(document.getElementById('goal').value);
-            
-            // Calcul du BMR (Métabolisme de base)
-            let bmr;
-            if (userProfile.gender === 'male') {
-                bmr = 88.362 + (13.397 * userProfile.weight) + (4.799 * userProfile.height) - (5.677 * userProfile.age);
-            } else {
-                bmr = 447.593 + (9.247 * userProfile.weight) + (3.098 * userProfile.height) - (4.330 * userProfile.age);
-            }
-            
-            // Calcul du TDEE (Dépense énergétique totale)
-            const tdee = bmr * userProfile.activity;
-            
-            // Calcul des calories quotidiennes avec l'objectif
-            dailyGoal = Math.round(tdee + userProfile.goal);
-            userProfile.dailyCalories = dailyGoal;
-            
-            // Calcul des objectifs de macronutriments
-            userProfile.proteinGoal = Math.round(userProfile.weight * 2.2); // 2.2g/kg de poids corporel
-            userProfile.carbsGoal = Math.round((dailyGoal * 0.5) / 4); // 50% des calories
-            userProfile.fatGoal = Math.round((dailyGoal * 0.3) / 9); // 30% des calories
-            
-            // Afficher les résultats
-            document.getElementById('bmr').textContent = Math.round(bmr);
-            document.getElementById('tdee').textContent = Math.round(tdee);
-            document.getElementById('goalCalories').textContent = dailyGoal;
-            document.getElementById('dailyGoal').textContent = dailyGoal;
-            document.getElementById('calorieResult').classList.remove('hidden');
-            
-            // Mettre à jour les objectifs de macronutriments
-            document.getElementById('proteinGoal').textContent = userProfile.proteinGoal;
-            document.getElementById('carbsGoal').textContent = userProfile.carbsGoal;
-            document.getElementById('fatGoal').textContent = userProfile.fatGoal;
-            
-            // Mettre à jour le cercle de progression
-            updateProgressCircle();
-        }
-
-        function populateFoodList(foods) {
-            const foodListElement = document.getElementById('foodList');
-            foodListElement.innerHTML = '';
-            
-            if (foods.length === 0) {
-                foodListElement.innerHTML = '<div class="col-span-2 text-center py-4 text-gray-500">Aucun aliment trouvé</div>';
-                return;
-            }
-            
-            foods.forEach(food => {
-                const foodItem = document.createElement('div');
-                foodItem.className = 'food-item bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition duration-200';
-                foodItem.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-medium text-gray-800">${food.name}</h4>
-                            <p class="text-sm text-gray-500">${food.serving}</p>
-                        </div>
-                        <span class="font-semibold text-indigo-600">${food.calories} kcal</span>
-                    </div>
-                    <div class="mt-2 flex justify-between text-xs text-gray-600">
-                        <span>Prot: ${food.protein}g</span>
-                        <span>Gluc: ${food.carbs}g</span>
-                        <span>Lip: ${food.fat}g</span>
-                    </div>
-                `;
-                
-                foodItem.addEventListener('click', () => addFoodToJournal(food));
-                foodListElement.appendChild(foodItem);
-            });
-        }
-
-        function addFoodToJournal(food) {
-            consumedFoods.push(food);
-            updateFoodJournal();
-            updateProgressCircle();
-        }
-
-        function updateFoodJournal() {
-            const consumedFoodsElement = document.getElementById('consumedFoods');
-            
-            if (consumedFoods.length === 0) {
-                consumedFoodsElement.innerHTML = '<div class="text-center py-4 text-gray-500">Aucun aliment ajouté pour le moment</div>';
-                return;
-            }
-            
-            consumedFoodsElement.innerHTML = '';
-            
-            // Calcul des totaux
-            let totalCalories = 0;
-            let totalProtein = 0;
-            let totalCarbs = 0;
-            let totalFat = 0;
-            
-            consumedFoods.forEach((food, index) => {
-                totalCalories += food.calories;
-                totalProtein += food.protein;
-                totalCarbs += food.carbs;
-                totalFat += food.fat;
-                
-                const foodItem = document.createElement('div');
-                foodItem.className = 'px-4 py-3 flex justify-between items-center';
-                foodItem.innerHTML = `
-                    <div class="flex items-center">
-                        <button class="delete-btn mr-3 text-gray-400 hover:text-red-500" data-index="${index}">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <div>
-                            <h4 class="font-medium text-gray-800">${food.name}</h4>
-                            <p class="text-xs text-gray-500">${food.serving}</p>
-                        </div>
-                    </div>
-                    <span class="font-semibold text-indigo-600">${food.calories} kcal</span>
-                `;
-                
-                consumedFoodsElement.appendChild(foodItem);
-            });
-            
-            // Ajouter le total
-            const totalItem = document.createElement('div');
-            totalItem.className = 'px-4 py-3 bg-gray-50 font-medium flex justify-between items-center border-t border-gray-200';
-            totalItem.innerHTML = `
-                <span>Total</span>
-                <span class="text-indigo-600">${totalCalories} kcal</span>
-            `;
-            consumedFoodsElement.appendChild(totalItem);
-            
-            // Ajouter les écouteurs d'événements pour les boutons de suppression
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const index = parseInt(this.getAttribute('data-index'));
-                    consumedFoods.splice(index, 1);
-                    updateFoodJournal();
-                    updateProgressCircle();
-                });
-            });
-            
-            // Mettre à jour les macronutriments
-            updateMacronutrients(totalProtein, totalCarbs, totalFat);
-        }
-
-        function updateMacronutrients(protein, carbs, fat) {
-            // Mettre à jour les valeurs
-            document.getElementById('proteinGrams').textContent = protein.toFixed(1);
-            document.getElementById('carbsGrams').textContent = carbs.toFixed(1);
-            document.getElementById('fatGrams').textContent = fat.toFixed(1);
-            
-            // Calculer les pourcentages
-            const proteinPercent = (protein / userProfile.proteinGoal) * 100;
-            const carbsPercent = (carbs / userProfile.carbsGoal) * 100;
-            const fatPercent = (fat / userProfile.fatGoal) * 100;
-            
-            // Mettre à jour les barres de progression
-            document.getElementById('proteinBar').style.width = `${Math.min(proteinPercent, 100)}%`;
-            document.getElementById('carbsBar').style.width = `${Math.min(carbsPercent, 100)}%`;
-            document.getElementById('fatBar').style.width = `${Math.min(fatPercent, 100)}%`;
-            
-            // Mettre à jour les pourcentages
-            document.getElementById('proteinPercent').textContent = `${Math.round(proteinPercent)}%`;
-            document.getElementById('carbsPercent').textContent = `${Math.round(carbsPercent)}%`;
-            document.getElementById('fatPercent').textContent = `${Math.round(fatPercent)}%`;
-            
-            // Changer la couleur si > 100%
-            document.getElementById('proteinBar').className = proteinPercent > 100 ? 
-                'bg-red-600 h-2 rounded-full' : 'bg-blue-600 h-2 rounded-full';
-            document.getElementById('carbsBar').className = carbsPercent > 100 ? 
-                'bg-red-600 h-2 rounded-full' : 'bg-green-600 h-2 rounded-full';
-            document.getElementById('fatBar').className = fatPercent > 100 ? 
-                'bg-red-600 h-2 rounded-full' : 'bg-yellow-600 h-2 rounded-full';
-        }
-
-        function updateProgressCircle() {
-            const totalCalories = consumedFoods.reduce((sum, food) => sum + food.calories, 0);
-            const progressPercent = Math.min((totalCalories / dailyGoal) * 100, 100);
-            
-            document.getElementById('consumedCalories').textContent = totalCalories;
-            
-            // Mettre à jour le cercle de progression
-            const circle = document.getElementById('progressCircle');
-            const circumference = 2 * Math.PI * 40;
-            const offset = circumference - (progressPercent / 100) * circumference;
-            
-            circle.style.strokeDasharray = circumference;
-            circle.style.strokeDashoffset = offset;
-            
-            // Changer la couleur si > 100%
-            circle.className = progressPercent >= 100 ? 
-                'text-red-500 progress-ring__circle' : 'text-indigo-500 progress-ring__circle';
-        }
-    </script>
+    <footer class="bg-gray-900 text-white text-center py-4">
+        &copy; 2024 Consulting IA. Tous droits réservés.
+    </footer>
 </body>
 </html>
